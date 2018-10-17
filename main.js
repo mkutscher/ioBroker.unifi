@@ -476,42 +476,24 @@ function updateUniFiData() {
       processSiteInfo(site_data);
 
       //////////////////////////////
-      // GET SITE SYSINFO
-      controller.getSiteSysinfo(sites, function(err, sysinfo) {
-        adapter.log.info('getSiteSysinfo: ' + sysinfo.length);
-        //adapter.log.info(JSON.stringify(sysinfo));
-
-        processSiteSysInfo(sites, sysinfo);
-
-        //////////////////////////////
-        // GET CLIENT DEVICES
-        controller.getClientDevices(sites, function(err, client_data) {
+      // GET CLIENT DEVICES
+      controller.getClientDevices(sites, function(err, client_data) {
           adapter.log.info('getClientDevices: ' + client_data[0].length);
           //adapter.log.info(JSON.stringify(client_data));
 
           processClientDeviceInfo(sites, client_data);
 
           //////////////////////////////
-          // GET ACCESS DEVICES
-          controller.getAccessDevices(sites, function(err, devices_data) {
-            adapter.log.info('getAccessDevices: ' + devices_data[0].length);
-            //adapter.log.info(JSON.stringify(devices_data));
+          // FINALIZE
 
-            processAccessDeviceInfo(sites, devices_data);
+          // finalize, logout and finish
+          controller.logout();
 
-            //////////////////////////////
-            // FINALIZE
+          // process all schedule state changes
+          processStateChanges(setStateArray);
 
-            // finalize, logout and finish
-            controller.logout();
-
-            // process all schedule state changes
-            processStateChanges(setStateArray);
-
-            // schedule a new execution of updateUniFiData in X seconds
-            queryTimeout = setTimeout(updateUniFiData, update_interval * 1000);
-          });
-        });
+          // schedule a new execution of updateUniFiData in X seconds
+          queryTimeout = setTimeout(updateUniFiData, update_interval * 1000);
       });
     });
   });
