@@ -478,6 +478,8 @@ function updateUniFiData() {
       //////////////////////////////
       // GET CLIENT DEVICES
       controller.getClientDevices(sites, function(err, client_data) {
+        // check if we have any data, if not skip this update
+        if(client_data && client_data[0] && client_data[0].length > 0) {
           adapter.log.info('getClientDevices: ' + client_data[0].length);
           //adapter.log.info(JSON.stringify(client_data));
 
@@ -494,6 +496,11 @@ function updateUniFiData() {
 
           // schedule a new execution of updateUniFiData in X seconds
           queryTimeout = setTimeout(updateUniFiData, update_interval * 1000);
+        } else {
+          // something went wrong, reshedule in smaller interval);
+          controller.logout();
+          queryTimeout = setTimeout(updateUniFiData, update_interval/2 * 1000);
+        }
       });
     });
   });
