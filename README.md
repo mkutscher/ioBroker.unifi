@@ -15,6 +15,9 @@ This ioBroker adapter allows to control and monitor [UniFi devices](http://www.u
 
 ## ChangeLog
 
+### 0.3.2
+  (mkutscher) sync with original jens-maus unifi
+
 ### 0.3.1
   (jens-maus) added support for multi-site environments.
 
